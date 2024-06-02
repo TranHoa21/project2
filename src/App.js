@@ -1,50 +1,63 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import marked from 'marked';
 
-const quotes = [
-  {
-    text: "The only limit to our realization of tomorrow is our doubts of today.",
-    author: "Franklin D. Roosevelt"
-  },
-  {
-    text: "The purpose of our lives is to be happy.",
-    author: "Dalai Lama"
-  },
-  {
-    text: "Life is what happens when you're busy making other plans.",
-    author: "John Lennon"
-  },
-  // Add more quotes as needed
-];
+// Mã Markdown mặc định
+const initialMarkdown = `# Welcome to my React Markdown Previewer!
 
-const getRandomQuote = () => quotes[Math.floor(Math.random() * quotes.length)];
+## This is a sub-heading...
+### And here's some other cool stuff:
+
+Here's some code, \`<div></div>\`, between 2 backticks.
+
+\`\`\`
+// this is multi-line code:
+function anotherExample(firstLine, lastLine) {
+  if (firstLine == '\`\`\`' && lastLine == '\`\`\`') {
+    return multiLineCode;
+  }
+}
+\`\`\`
+
+You can also make text **bold**... whoa!
+Or _italic_.
+Or... wait for it... **_both!_**
+And feel free to go crazy ~~crossing stuff out~~.
+
+There's also [links](https://www.freecodecamp.org), and
+> Block Quotes!
+
+- And of course there are lists.
+  - Some are bulleted.
+     - With different indentation levels.
+        - That look like this.
+
+1. And there are numbererd lists too.
+1. Use just 1s if you want!
+1. And last but not least, let's not forget embedded images:
+
+![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)
+`;
 
 function App() {
-  const [quote, setQuote] = useState(getRandomQuote());
+  const [markdown, setMarkdown] = useState(initialMarkdown);
 
-  const handleNewQuote = () => {
-    setQuote(getRandomQuote());
+  const handleChange = (event) => {
+    setMarkdown(event.target.value);
   };
 
   useEffect(() => {
-    setQuote(getRandomQuote());
-  }, []);
+    document.getElementById('preview').innerHTML = marked(markdown);
+  }, [markdown]);
 
   return (
-    <div id="quote-box">
-      <div id="text">{quote.text}</div>
-      <div id="author">- {quote.author}</div>
-      <button id="new-quote" onClick={handleNewQuote}>New Quote</button>
-      <a
-        id="tweet-quote"
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `"${quote.text}" - ${quote.author}`
-        )}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Tweet Quote
-      </a>
+    <div className="App">
+      <textarea
+        id="editor"
+        value={markdown}
+        onChange={handleChange}
+      />
+      <div id="preview"></div>
     </div>
   );
 }
